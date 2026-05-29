@@ -34,7 +34,7 @@ import com.qpmanagement.service.PasswordResetService;
 
 @RestController
 @RequestMapping("/api/admin")
-@CrossOrigin(origins = "http://localhost:3000")
+
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
     

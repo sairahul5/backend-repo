@@ -16,7 +16,7 @@ import com.qpmanagement.service.ContactService;
 
 @RestController
 @RequestMapping("/api/contact")
-@CrossOrigin(origins = "http://localhost:3000")
+
 public class ContactController {
     
     @Autowired

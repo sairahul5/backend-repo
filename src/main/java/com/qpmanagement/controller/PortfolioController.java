@@ -24,7 +24,7 @@ import com.qpmanagement.service.ProjectService;
 
 @RestController
 @RequestMapping("/api/portfolio")
-@CrossOrigin(origins = "http://localhost:3000")
+
 public class PortfolioController {
     
     @Autowired

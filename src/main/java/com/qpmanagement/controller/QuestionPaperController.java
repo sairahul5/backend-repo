@@ -22,7 +22,7 @@ import com.qpmanagement.service.QuestionPaperService;
 
 @RestController
 @RequestMapping("/api/question-papers")
-@CrossOrigin(origins = "http://localhost:3000")
+
 public class QuestionPaperController {
     
     @Autowired

@@ -23,7 +23,7 @@ import com.qpmanagement.service.SolutionService;
 
 @RestController
 @RequestMapping("/api/solutions")
-@CrossOrigin(origins = "http://localhost:3000")
+
 public class SolutionController {
     
     @Autowired
