@@ -18,7 +18,9 @@ public class RegisterRequest {
     
     private String name;
     
-    private String email; // Will be auto-generated from username
+    @NotBlank(message = "Email is required")
+    @jakarta.validation.constraints.Email(message = "Please provide a valid email address")
+    private String email; 
     
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters")

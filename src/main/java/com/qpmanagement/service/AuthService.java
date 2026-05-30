@@ -41,18 +41,15 @@ public class AuthService {
             throw new RuntimeException("Username already exists");
         }
         
-        // Auto-generate email from username
-        String email = request.getUsername() + "@sairahul.adabala";
-        
-        // Check if email already exists (should not happen if username is unique)
-        if (userRepository.existsByEmail(email)) {
+        // Check if email already exists
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
         
         User user = new User();
         user.setUsername(request.getUsername());
         user.setName(request.getName() != null ? request.getName() : request.getUsername());
-        user.setEmail(email);
+        user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(User.Role.USER);
         
