@@ -39,7 +39,7 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/mfa/verify", "/api/contact", "/uploads/**").permitAll()
-                .requestMatchers("/api/password-reset/request", "/api/password-reset/verify").permitAll()
+                .requestMatchers("/api/password-reset/request", "/api/password-reset/verify", "/api/ping").permitAll()
                 .requestMatchers("/api/question-papers/pending").hasAnyRole("ADMIN", "EDITOR")
                 .requestMatchers("/api/question-papers", "/api/question-papers/filter").permitAll()
                 .requestMatchers("/api/portfolio", "/api/portfolio/filter").permitAll()
