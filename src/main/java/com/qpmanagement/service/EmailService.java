@@ -1,43 +1,45 @@
 package com.qpmanagement.service;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 
 @Service
 public class EmailService {
 
-    @Value("${brevo.api.key}")
-    private String brevoApiKey;
+    @Value("${mailtrap.username}")
+    private String mailtrapUsername;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Value("${mailtrap.password}")
+    private String mailtrapPassword;
 
     public void sendPasswordResetCode(String toEmail, String username, String code) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("api-key", brevoApiKey);
+            JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+            mailSender.setHost("sandbox.smtp.mailtrap.io");
+            mailSender.setPort(2525);
+            mailSender.setUsername(mailtrapUsername);
+            mailSender.setPassword(mailtrapPassword);
 
-            Map<String, Object> body = Map.of(
-                "sender", Map.of("name", "QP Management System", "email", "lynex8778@gmail.com"),
-                "to", List.of(Map.of("email", toEmail, "name", username)),
-                "subject", "Password Reset Code - QP Management System",
-                "textContent", buildPasswordResetEmail(username, code)
-            );
+            Properties props = mailSender.getJavaMailProperties();
+            props.put("mail.transport.protocol", "smtp");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
 
-            HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-            ResponseEntity<String> response = restTemplate.postForEntity(
-                "https://api.brevo.com/v3/smtp/email", request, String.class
-            );
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("noreply@qpmanagement.com");
+            message.setTo(toEmail);
+            message.setSubject("Password Reset Code - QP Management System");
+            message.setText(buildPasswordResetEmail(username, code));
 
-            System.out.println("Email sent successfully to: " + toEmail + " | Status: " + response.getStatusCode());
+            mailSender.send(message);
+            System.out.println("Email sent successfully to: " + toEmail);
 
         } catch (Exception e) {
-            System.err.println("Failed to send email to " + toEmail + ": " + e.getMessage());
+            System.err.println("Failed to send email: " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException("Email sending failed: " + e.getMessage());
         }
