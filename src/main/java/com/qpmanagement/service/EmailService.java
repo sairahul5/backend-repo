@@ -10,6 +10,9 @@ import java.util.Map;
 @Service
 public class EmailService {
 
+    @Value("${resend.to.override:}")
+    private String toOverrideEmail;
+
     @Value("${resend.api.key}")
     private String resendApiKey;
 
@@ -26,7 +29,7 @@ public class EmailService {
 
             Map<String, Object> body = Map.of(
                 "from", fromEmail,
-                "to", new String[]{toEmail},
+                "to", new String[]{toOverrideEmail != null && !toOverrideEmail.isEmpty() ? toOverrideEmail : toEmail},
                 "subject", "Password Reset Code - QP Management System",
                 "text", buildPasswordResetEmail(username, code)
             );
