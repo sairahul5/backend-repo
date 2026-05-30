@@ -6,25 +6,28 @@ public class AuthResponse {
     private String name;
     private String role;
     private boolean mfaRequired;
+    private boolean mfaEnabled;
     private String tempToken;
 
     public AuthResponse() {
     }
 
-    public AuthResponse(String token, String email, String name, String role) {
+    public AuthResponse(String token, String email, String name, String role, boolean mfaEnabled) {
         this.token = token;
         this.email = email;
         this.name = name;
         this.role = role;
+        this.mfaEnabled = mfaEnabled;
         this.mfaRequired = false;
     }
     
-    public AuthResponse(String tempToken, String email, String name, String role, boolean mfaRequired) {
+    public AuthResponse(String tempToken, String email, String name, String role, boolean mfaRequired, boolean mfaEnabled) {
         this.tempToken = tempToken;
         this.email = email;
         this.name = name;
         this.role = role;
         this.mfaRequired = mfaRequired;
+        this.mfaEnabled = mfaEnabled;
     }
 
     public String getToken() {
@@ -73,5 +76,13 @@ public class AuthResponse {
     
     public void setTempToken(String tempToken) {
         this.tempToken = tempToken;
+    }
+
+    public boolean isMfaEnabled() {
+        return mfaEnabled;
+    }
+
+    public void setMfaEnabled(boolean mfaEnabled) {
+        this.mfaEnabled = mfaEnabled;
     }
 }

@@ -60,7 +60,7 @@ public class AuthService {
         
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
         
-        return new AuthResponse(token, user.getEmail(), user.getName(), user.getRole().name());
+        return new AuthResponse(token, user.getEmail(), user.getName(), user.getRole().name(), user.isMfaEnabled());
     }
     
     public AuthResponse login(LoginRequest request) {
@@ -79,13 +79,13 @@ public class AuthService {
             
             // Return response indicating MFA is required
             AuthResponse response = new AuthResponse(tempToken, user.getEmail(), user.getName(), 
-                                                     user.getRole().name(), true);
+                                                     user.getRole().name(), true, user.isMfaEnabled());
             return response;
         }
         
         // Normal login without MFA
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
-        return new AuthResponse(token, user.getEmail(), user.getName(), user.getRole().name());
+        return new AuthResponse(token, user.getEmail(), user.getName(), user.getRole().name(), user.isMfaEnabled());
     }
     
     public MfaSetupResponse setupMfa(String username) {
@@ -147,7 +147,7 @@ public class AuthService {
         
         // Generate actual JWT token
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
-        return new AuthResponse(token, user.getEmail(), user.getName(), user.getRole().name());
+        return new AuthResponse(token, user.getEmail(), user.getName(), user.getRole().name(), user.isMfaEnabled());
     }
     
     public void enableMfa(String username, String code) {
