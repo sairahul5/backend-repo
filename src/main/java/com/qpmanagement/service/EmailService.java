@@ -23,7 +23,7 @@ public class EmailService {
             headers.set("api-key", brevoApiKey);
 
             Map<String, Object> body = Map.of(
-                "sender", Map.of("name", "QP Management System", "email", "noreply@qpmanagement.com"),
+                "sender", Map.of("name", "QP Management System", "email", "lynex8778@gmail.com"),
                 "to", List.of(Map.of("email", toEmail, "name", username)),
                 "subject", "Password Reset Code - QP Management System",
                 "textContent", buildPasswordResetEmail(username, code)
