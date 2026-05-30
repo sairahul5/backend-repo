@@ -38,8 +38,9 @@ public class SecurityConfig {
                 .frameOptions(frameOptions -> frameOptions.disable())
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/register", "/api/contact", "/uploads/**").permitAll()
+                .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/mfa/verify", "/api/contact", "/uploads/**").permitAll()
                 .requestMatchers("/api/password-reset/request", "/api/password-reset/verify").permitAll()
+                .requestMatchers("/api/question-papers/pending").hasAnyRole("ADMIN", "EDITOR")
                 .requestMatchers("/api/question-papers", "/api/question-papers/filter").permitAll()
                 .requestMatchers("/api/portfolio", "/api/portfolio/filter").permitAll()
                 .requestMatchers("/api/solutions").permitAll()
@@ -59,7 +60,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://frontend-rpo.vercel.app"));
+        String allowedOrigin = System.getenv("FRONTEND_URL") != null
+            ? System.getenv("FRONTEND_URL")
+            : "http://localhost:3000";
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", allowedOrigin));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);

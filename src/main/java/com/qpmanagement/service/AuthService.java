@@ -71,8 +71,8 @@ public class AuthService {
             throw new RuntimeException("Invalid password");
         }
         
-        // Check if user is admin and has MFA enabled
-        if (user.getRole() == User.Role.ADMIN && user.isMfaEnabled()) {
+        // Check if user has MFA enabled
+        if (user.isMfaEnabled()) {
             // Generate temporary token for MFA verification
             String tempToken = UUID.randomUUID().toString();
             tempTokenStore.put(tempToken, user.getUsername());
@@ -91,10 +91,6 @@ public class AuthService {
     public MfaSetupResponse setupMfa(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        if (user.getRole() != User.Role.ADMIN) {
-            throw new RuntimeException("MFA is only available for admin users");
-        }
         
         try {
             String secret = mfaService.generateSecret();
