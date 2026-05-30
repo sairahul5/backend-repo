@@ -53,9 +53,14 @@ public class PasswordResetService {
             throw new RuntimeException("You already have a pending password reset request");
         }
 
-        // Create new reset request
+        // Create new reset request and generate a unique 6-digit code
         PasswordResetRequest resetRequest = new PasswordResetRequest(user.getUsername(), user.getEmail());
+        String code = generateUniqueCode();
+        resetRequest.setCode(code);
         resetRequest = resetRequestRepository.save(resetRequest);
+
+        // Send email with code immediately
+        emailService.sendPasswordResetCode(resetRequest.getEmail(), resetRequest.getUsername(), code);
 
         return mapToResponse(resetRequest);
     }
