@@ -18,20 +18,20 @@ public class EmailService {
     }
 
     public void sendPasswordResetCode(String toEmail, String username, String code) {
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(toEmail);
-            message.setSubject("Password Reset Code - QP Management System");
-            message.setText(buildPasswordResetEmail(username, code));
-            
-            mailSender.send(message);
-        } catch (Exception e) {
-            // Log the error but don't throw exception
-            System.err.println("Failed to send email to " + toEmail + ": " + e.getMessage());
-            // In production, you might want to use proper logging
-        }
+    try {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(toEmail);
+        message.setSubject("Password Reset Code - QP Management System");
+        message.setText(buildPasswordResetEmail(username, code));
+        mailSender.send(message);
+        System.out.println("Email sent successfully to: " + toEmail); // ← confirm success
+    } catch (Exception e) {
+        System.err.println("Failed to send email to " + toEmail + ": " + e.getMessage());
+        e.printStackTrace();
+        throw new RuntimeException("Email sending failed: " + e.getMessage()); // ← surface the error
     }
+}
 
     private String buildPasswordResetEmail(String username, String code) {
         return String.format(

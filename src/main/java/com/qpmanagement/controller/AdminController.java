@@ -220,4 +220,15 @@ public class AdminController {
                     .body(new ApiResponse<>(false, e.getMessage(), null));
         }
     }
+    @PostMapping("/password-reset/resend")
+public ResponseEntity<ApiResponse<PasswordResetResponse>> resendPasswordResetCode(@RequestBody PasswordResetAcceptDTO acceptDTO) {
+    try {
+        PasswordResetResponse response = passwordResetService.resendResetCode(acceptDTO.getRequestId());
+        return ResponseEntity.ok(new ApiResponse<>(true, "Reset code resent to user's email", response));
+    } catch (Exception e) {
+        return ResponseEntity.badRequest()
+                .body(new ApiResponse<>(false, e.getMessage(), null));
+    }
+}
+
 }

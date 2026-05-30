@@ -83,6 +83,26 @@ public class PasswordResetService {
         return mapToResponse(resetRequest);
     }
 
+    @Transactional
+public PasswordResetResponse resendResetCode(Long requestId) {
+    PasswordResetRequest resetRequest = resetRequestRepository.findById(requestId)
+            .orElseThrow(() -> new RuntimeException("Reset request not found"));
+
+    if (resetRequest.getStatus() != ResetStatus.PENDING) {
+        throw new RuntimeException("This request has already been completed");
+    }
+
+    // Generate a fresh code
+    String code = generateUniqueCode();
+    resetRequest.setCode(code);
+    resetRequest = resetRequestRepository.save(resetRequest);
+
+    // Resend email — this time exception will surface if it fails
+    emailService.sendPasswordResetCode(resetRequest.getEmail(), resetRequest.getUsername(), code);
+
+    return mapToResponse(resetRequest);
+}
+
     /**
      * Verify code and reset password
      */
