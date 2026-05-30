@@ -5,19 +5,14 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class EmailService {
 
-    @Value("${resend.to.override:}")
-    private String toOverrideEmail;
-
-    @Value("${resend.api.key}")
-    private String resendApiKey;
-
-    @Value("${resend.from.email}")
-    private String fromEmail;
+    @Value("${brevo.api.key}")
+    private String brevoApiKey;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -25,18 +20,18 @@ public class EmailService {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", "Bearer " + resendApiKey);
+            headers.set("api-key", brevoApiKey);
 
             Map<String, Object> body = Map.of(
-                "from", fromEmail,
-                "to", new String[]{toOverrideEmail != null && !toOverrideEmail.isEmpty() ? toOverrideEmail : toEmail},
+                "sender", Map.of("name", "QP Management System", "email", "noreply@qpmanagement.com"),
+                "to", List.of(Map.of("email", toEmail, "name", username)),
                 "subject", "Password Reset Code - QP Management System",
-                "text", buildPasswordResetEmail(username, code)
+                "textContent", buildPasswordResetEmail(username, code)
             );
 
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
             ResponseEntity<String> response = restTemplate.postForEntity(
-                "https://api.resend.com/emails", request, String.class
+                "https://api.brevo.com/v3/smtp/email", request, String.class
             );
 
             System.out.println("Email sent successfully to: " + toEmail + " | Status: " + response.getStatusCode());
